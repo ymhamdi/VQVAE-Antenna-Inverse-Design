@@ -257,7 +257,7 @@ Ideas to go further (more arrays for stage A, an autoregressive prior) are in [`
 - **Teacher's code (N. ISMAIL, course material):** the array-factor function `calcul_AF_performance_metrics`, the error lines, the `FFNN` class, `ffnn_model.pth` and `normalization_params.npz`. They are reproduced for the comparison and marked in the code.
 - **Method:** the VQ-VAE of A. van den Oord, O. Vinyals and K. Kavukcuoglu, *Neural Discrete Representation Learning*, NeurIPS 2017 ([arXiv:1711.00937](https://arxiv.org/abs/1711.00937)).
 - **Libraries** (from the imports; there is no requirements file): NumPy, SciPy (`scipy.io`, `scipy.signal.find_peaks`), PyTorch, Matplotlib.
-- **AI use:** the code and docs were written with Claude (Anthropic); 5 of the 6 commits on `main` carry a `Co-Authored-By: Claude` trailer. This README was drafted with Claude Code. Every number on it was checked against a committed file or a re-run on 23 Nov 2026; the sources are listed in the pull request that added it. Every image is a plot written by the scripts or a diagram drawn for this page.
+- **AI use:** the code and docs were written with Claude (Anthropic); 5 of the 6 commits on `main` carry a `Co-Authored-By: Claude` trailer. This README was drafted with Claude Code. Every number on it was checked against a committed file or a re-run on 23 Nov 2026; the sources are listed in [pull request #1](https://github.com/ymhamdi/VQVAE-Antenna-Inverse-Design/pull/1). Every image is a plot written by the scripts or a diagram drawn for this page.
 
 Student coursework, not an official INSAT publication.
 

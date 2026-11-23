@@ -61,7 +61,9 @@ The dataset is 1,000 random arrays and their computed specs (seed 46), split int
 
 Computed in the φ = 0 cut, on 1,000 angles θ ∈ [0, 2π], with φ_n = 2πn / n_r the angle of element n on ring r:
 
-$$\mathrm{AF}(\theta)=\sum_{r=1}^{5}\sum_{n=0}^{n_r-1}\exp\Big(j\,k\,a_r\big[\sin\theta\cos(\phi-\phi_n)-\sin\theta_0\cos(\phi_0-\phi_n)\big]\Big),\qquad k=\frac{2\pi}{\lambda}$$
+```math
+\mathrm{AF}(\theta)=\sum_{r=1}^{5}\sum_{n=0}^{n_r-1}\exp\Big(j\,k\,a_r\big[\sin\theta\cos(\phi-\phi_n)-\sin\theta_0\cos(\phi_0-\phi_n)\big]\Big),\qquad k=\frac{2\pi}{\lambda}
+```
 
 In the pointing direction all phases align, so G = 20·log10(Σ n_r). On the 1,000 samples, the computed G matches that to within 0.0007 dB.
 
@@ -112,7 +114,9 @@ The "Codebook" and "Engagement" curves have the same values by construction, so 
 3. **Check.** The teacher's function computes G, SSL and HPBW of each array, at the requested θ0.
 4. **Keep the closest**, by the criterion below.
 
-$$\hat{\mathbf{n}}=\arg\min_i\;\frac{|G^{(i)}-G^*|}{\sigma_G}+\frac{|\mathrm{SSL}^{(i)}-\mathrm{SSL}^*|}{\sigma_{\mathrm{SSL}}}+\frac{|\mathrm{HPBW}^{(i)}-\mathrm{HPBW}^*|}{\sigma_{\mathrm{HPBW}}}$$
+```math
+\hat{\mathbf{n}}=\arg\min_i\;\frac{|G^{(i)}-G^{\ast}|}{\sigma_G}+\frac{|\mathrm{SSL}^{(i)}-\mathrm{SSL}^{\ast}|}{\sigma_{\mathrm{SSL}}}+\frac{|\mathrm{HPBW}^{(i)}-\mathrm{HPBW}^{\ast}|}{\sigma_{\mathrm{HPBW}}}
+```
 
 The σ come from the training set (2.89 dB, 3.05 dB, 24.96°), so dB and degrees count on the same scale. The price: about 294 array-factor evaluations per spec, where the FFNN needs one.
 
@@ -200,7 +204,7 @@ On our laptop's CPU they take 1.8 s, 0.5 s, 11 s and 33 s; the docs give 2 to 5 
 
 ### Try it in 5 minutes
 
-1. **Re-run the test on the committed models.** `python test_model_VQVAE.py` (about 35 s). The "RÉSUMÉ DU TEST" table at the end gives the mean global error: 0.614 for the VQ-VAE, 3.372 for the FFNN.
+1. **Re-run the test on the committed models.** `python test_model_VQVAE.py` (about 35 s). The "RÉSUMÉ DU TEST" table at the end gives the mean global error: 0.614 for the VQ-VAE on a CPU (0.713 on our GPU), 3.372 for the FFNN.
 2. **Open `diagramme_exemple_77.png`.** Look at the side lobes: orange follows blue, green sits 5 dB lower.
 3. **Change the draw.** Set `SEED = 1` at the top of `test_model_VQVAE.py` and run it again: 0.665%. That is the spread of §06.
 4. **Retrain.** `python VQVAE_training.py`, then script 4 again. Open `courbes_VQVAE.png` and `distribution_erreurs.png`.
@@ -280,15 +284,15 @@ In French, one page per script:
 
 ```text
 .
-├── dataset.py                    # 1 · 1,000 random arrays → Minput (specs, 4 × 1000) and Moutput (arrays, 5 × 1000)
-├── repartition_training_test.py  # 2 · 900 / 100 split → *_training, *_test, train_indices, test_indices
-├── VQVAE_training.py             # 3 · stage A + stage B → vqvae_model.pt, prior_model.pt, historique_*, courbes
-├── test_model_VQVAE.py           # 4 · inverse design, FFNN comparison → *_VQVAE, *_FFNN, comparaison_*, plots
-├── ffnn_model.pth                # the teacher's FFNN; normalization_params.npz is its scaling
-├── *.npy, *.mat, *.npz           # committed results of the full run (one column = one sample)
-├── *.png                         # training curves, 4 example patterns, error distribution
-├── docs/                         # one page per script, then results and limits (French)
+├── dataset.py                    # 1 · random arrays → Minput (specs), Moutput (arrays)
+├── repartition_training_test.py  # 2 · 900 / 100 split → *_training, *_test, *_indices
+├── VQVAE_training.py             # 3 · stages A and B → *_model.pt, historique_*, courbes
+├── test_model_VQVAE.py           # 4 · inverse design, FFNN → *_VQVAE, *_FFNN, plots
+├── ffnn_model.pth                # the teacher's FFNN (scaling: normalization_params.npz)
+├── *.npy, *.mat, *.npz           # committed results of the full run
+├── *.png                         # training curves, example patterns, error distribution
+├── docs/                         # one page per script, results and limits (French)
 └── assets/readme/                # the diagrams on this page
 ```
 
-`Minput` holds the specs (the model's input), `Moutput` the arrays (its output): the teacher's naming. License: [MIT](LICENSE), except the teacher's code listed above.
+`Minput` holds the specs (the model's input) and `Moutput` the arrays (its output), one column per sample: the teacher's naming. License: [MIT](LICENSE), except the teacher's code listed above.

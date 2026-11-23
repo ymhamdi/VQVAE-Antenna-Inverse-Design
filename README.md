@@ -95,7 +95,7 @@ flowchart TB
 <summary><b>Training curves</b> (<code>courbes_VQVAE.png</code>, written by script 3)</summary>
 <br>
 
-<img src="courbes_VQVAE.png" width="100%" alt="Stage A training curves over 100 epochs: reconstruction loss falls from 12 to about 3.3; the codebook and engagement losses climb to about 6.5; 16 codes used from epoch 2, perplexity near 15.8; training reconstruction reaches 76% per ring and 28% per array">
+<img src="courbes_VQVAE.png" width="100%" alt="Stage A training curves over 100 epochs: reconstruction loss falls from 12 to about 3.4; the codebook and engagement losses climb to about 6.5; 16 codes used from epoch 2, perplexity near 15.8; training reconstruction reaches 76% per ring and 28% per array">
 
 The "Codebook" and "Engagement" curves have the same values by construction, so the blue one is hidden under the orange one. The reconstruction loss is still falling at epoch 100.
 

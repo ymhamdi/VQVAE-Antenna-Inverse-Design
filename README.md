@@ -76,18 +76,16 @@ In the pointing direction all phases align, so G = 20·log10(Σ n_r). On the 1,0
 Training runs in two stages, about 11 s on our laptop ([`docs/03_entrainement.md`](docs/03_entrainement.md)).
 
 ```mermaid
-flowchart LR
-  subgraph A["Stage A · VQ-VAE, arrays only"]
-    N["array n<br/>5 integers, 0 to 10"] --> E["encoder MLP"]
-    E --> Q["quantizer<br/>16 codes of 8 dims<br/>one code per ring"]
-    Q --> D["decoder MLP"]
-    D --> NH["rebuilt array"]
+flowchart TB
+  subgraph A["Stage A · VQ-VAE, trained on arrays only"]
+    direction LR
+    N["array n<br/>5 integers, 0 to 10"] --> E["encoder MLP"] --> Q["quantizer<br/>16 codes, one per ring"] --> D["decoder MLP"] --> NH["rebuilt array"]
   end
-  subgraph B["Stage B · conditional prior"]
-    S["spec s<br/>G, SSL, HPBW, θ0"] --> P["prior MLP"]
-    P --> K["a 16-way choice<br/>for each of the 5 rings"]
+  subgraph B["Stage B · conditional prior, trained on specs"]
+    direction LR
+    S["spec s<br/>G, SSL, HPBW, θ0"] --> P["prior MLP"] --> K["a 16-way choice<br/>for each of the 5 rings"]
   end
-  Q -. "code indices = targets" .-> K
+  A -. "the training arrays' code indices are the targets" .-> B
 ```
 
 - **Stage A, the VQ-VAE (57,823 parameters).** It never sees a spec. Each ring becomes one 8-number vector, snapped to the nearest of **16 codes**, and the decoder rebuilds the array. After 100 epochs it rebuilds **76.4%** of training rings and **28.3%** of whole arrays, and uses all 16 codes (perplexity 15.76 of 16).

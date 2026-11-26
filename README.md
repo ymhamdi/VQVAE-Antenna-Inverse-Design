@@ -252,6 +252,12 @@ Ideas to go further (more arrays for stage A, an autoregressive prior) are in [`
 
 ---
 
+## Second lab: DQN for side-lobe minimization
+
+Same array, same physics, another question: for a pointing angle, a minimum gain (so a minimum number of antennas) and a maximum beamwidth, which array has the lowest side-lobe level? A Deep Q-Network written from scratch in PyTorch edits the array one antenna at a time. It trains with no dataset: requests and arrays are generated on the fly. On the 100 test specs above, with about 20 array-factor evaluations per spec, it returns a valid array for **86%** of them, **6.9 dB** above the true optimum on average, against 83% and 10.2 dB for random search with the same budget (mean of 3 seeds, with a wide spread). The optimum comes from exhaustive search over all 161,050 arrays (0.38 s per spec on a GPU), so the RL is a method demonstration. Details, equations and limits, in French: [`rl_dqn/README.md`](rl_dqn/README.md).
+
+---
+
 ## Credits and AI use
 
 - **Teacher's code (N. ISMAIL, course material):** the array-factor function `calcul_AF_performance_metrics`, the error lines, the `FFNN` class, `ffnn_model.pth` and `normalization_params.npz`. They are reproduced for the comparison and marked in the code.

@@ -78,7 +78,7 @@ To read a `.mat` key: `python -c "import scipy.io as s; print(s.loadmat('rl_dqn/
 | Q4 | Fast physics = teacher's function | 2,000 random (array, θ0) pairs: max gap 1.07e-14 dB (G), 4.97e-14 dB (SSL), 0 (HPBW); 0 pairs above 1e-9; batch version 5.68e-14 dB, 8 exact fallbacks; copy identical to `dataset.py` | `rl_dqn/verification_physique.npy` / `.mat` | file |
 | Q5 | Speeds | fast version 0.19 ms per array (+ 5.3 ms per θ0 for the ring patterns); exhaustive search 0.40 s per θ0 on GPU (≈ 138 s estimated with the teacher's function) | `verification_physique.mat` `temps_*` | file |
 | Q6 | Environment | 11 actions (+1 / −1 per ring, stop); 30 steps; 14-value state with sin θ0 only; requests drawn on the fly (θ0 uniform, G_min and HPBW_max uniform in the ranges of 64 random arrays at that θ0); no data file read | `rl_dqn/env_antenne.py` constants, `tirer_requete` | code |
-| Q7 | Score and reward | J = −SSL − 10·(G shortfall, dB) − 1·(HPBW excess, °) − 5 dB if invalid; r = ΔJ/10 − 0.005; illegal move −0.1 | `env_antenne.py` `ALPHA`, `BETA`, `PENALITE_INVALIDE`, `ECHELLE_J`, `COUT_PAS`, `PENALITE_ILLEGAL` | code |
+| Q7 | Score and reward | J = −SSL − 10·(G shortfall, dB) − 1·(HPBW excess, °) − 5 dB if invalid; r = ΔJ/10 − 0.005; illegal move −0.1. One missing antenna costs ≥ 10·20·log10(50/49) = 1.75 dB of score (N ≤ 50) | `env_antenne.py` `ALPHA`, `BETA`, `PENALITE_INVALIDE`, `ECHELLE_J`, `COUT_PAS`, `PENALITE_ILLEGAL` | code |
 | Q8 | Network | MLP 14 → 256 → 256 → 11, 72,459 parameters; Double DQN, Huber, replay 100,000, batch 512 every 4 steps, target copy every 500 updates, ε 1 → 0.05 | `rl_dqn/DQN_training.py`; `dqn_model.pt` | code, file |
 | Q9 | Training run | 3 seeds (46, 47, 48) × 300,000 steps on GPU; 51,323 episodes; 388 / 410 / 436 s (1,238 s in all); last 500 episodes valid in 84.4 / 83.6 / 84.6% | `rl_dqn/historique_DQN.mat` `duree_s`; console of `DQN_training.py` | file, run 26 Nov |
 | Q10 | Seed 47 degrades | return 1.88 → 1.21 and loss 0.0036 → 0.0114 (200-250k vs > 275k steps) | `rl_dqn/historique_DQN.npy` columns 3, 11 | file |
@@ -86,18 +86,20 @@ To read a `.mat` key: `python -c "import scipy.io as s; print(s.loadmat('rl_dqn/
 | Q12 | Same table, first-lab rows | reference −8.30 dB (100% valid, gap 13.37 dB); VQ-VAE −8.32 dB (65% valid); FFNN −8.71 dB (31% valid) | same | file |
 | Q13 | Per seed | DQN valid 82 / 84 / 92%, gap 5.97 / 8.72 / 6.02 dB; random search valid 84 / 86 / 79%, gap 10.27 / 9.98 / 10.46 dB; DQN lower SSL than random on 64 / 73, 46 / 73, 70 / 77 specs where both are valid | `rl_dqn/resultats_DQN.mat` `resultats` | file |
 | Q14 | "Number" of antennas | the optimum uses more elements than G_min requires on 96% of specs (+10.43 on average); 13.37 dB lower than the reference on average; median 32,590 valid arrays per spec | `resultats_DQN.mat` `resultats`, `N_ref`, `nb_valides_exhaustive` | file |
-| Q15 | Spec 0 with the DQN | DQN seed 46 [6 2 10 10 3] −16.11 dB, valid; optimum [5 6 8 10 3] −18.54 dB | `resultats_DQN.mat`, row 0 | file |
+| Q15 | Spec 0 with the DQN | DQN seed 46 [6 2 10 10 3]: SSL −16.11 dB, G 29.83 dB, HPBW 72.43°, valid; VQ-VAE [9 1 9 5 7]: −9.36 dB, HPBW 72.07°; optimum [5 6 8 10 3] −18.54 dB. Re-drawn by `assets/readme/make_readme_images.py` with the teacher's function (same values) | `resultats_DQN.mat`, row 0; console of the generator | file, run 26 Nov |
 | Q16 | Spec 10 with the DQN | seed 46 fails: no valid array in 25 evaluations, ends at HPBW 18.02° (limit 17.8°), 6 repeated illegal moves | `resultats_DQN.mat` `trajectoire_DQN` | file |
 | Q17 | The 5 dB penalty saw the test set | pilots on the 100 test specs (1 seed, 100k steps): P = 0 → 59% valid, 7.2 dB; P = 20 dB → 94%, 10.3 dB; P = 5 dB → 85%, 8.1 dB | throwaway runs, logs not in the repo | outside scripts |
 | Q18 | Update cost | ≈ 1.4 ms per update, same for batches of 128 and 512 on the GPU | throwaway benchmark | outside scripts |
 | Q19 | Durations | `physique_antenne.py` 30 s; R2 50 s; `--rapide` chain (3 scripts) 22.3 s | timed in Git Bash | run 26 Nov |
+| Q20 | Training curves (mean of 3 seeds, moving average over 500 episodes, first vs last window) | return −0.14 → 1.56 (about 2 near 200,000 steps); best valid SSL −10.54 → −15.85 dB; valid episodes 50.0 → 84.2%; evaluations per episode 8.25 → 19.92 | `rl_dqn/historique_DQN.npy` columns 3, 5, 6, 7; `courbes_DQN.png` | file |
 
 ## History and credits
 
 | # | Fact | Value | Source | Status |
 |---|---|---|---|---|
 | H1 | Commits | 20 on `main` (18 non-merge, 2 merges of PR #1 and PR #2); one author, as "Youssef El Mhamdi" (12) and "Youssef Mhamdi" (8) | `git rev-list --count origin/main`; `git log origin/main --format=%an` | run 26 Nov |
-| H2 | AI use | 10 of the 20 commits carry a `Co-authored-by: Claude` trailer; the 26 Nov commits do not, though they were written with Claude Code | `git log origin/main -i --grep="Co-authored-by: Claude" --oneline` | run 26 Nov |
+| H2 | AI use | on 26 Nov, 10 of the 20 commits on `main` carry a `Co-authored-by: Claude` trailer; the 6 DQN commits of 26 Nov (`038114d` … `f823a30`) do not, though they were written with Claude Code | `git log origin/main -i --grep="Co-authored-by: Claude" --oneline` | run 26 Nov |
+| H8 | Team | Youssef El Mhamdi, INSAT, IIA3 | given by the author (Checkpoint 1, 26 Nov) | author |
 | H3 | Libraries | numpy, scipy (`scipy.io`, `scipy.signal.find_peaks`), torch, matplotlib; no requirements file | `import` lines of the 7 scripts | code |
 | H4 | VQ-VAE paper | A. van den Oord, O. Vinyals, K. Kavukcuoglu, *Neural Discrete Representation Learning*, NeurIPS 2017, arXiv:1711.00937 | the paper | external |
 | H5 | DQN papers | V. Mnih et al., *Human-level control through deep reinforcement learning*, Nature 518, 2015; H. van Hasselt, A. Guez, D. Silver, *Deep Reinforcement Learning with Double Q-learning*, AAAI 2016, arXiv:1509.06461 | the papers | external |

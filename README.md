@@ -262,7 +262,7 @@ cd VQVAE-Antenna-Inverse-Design
 python -m pip install numpy scipy torch matplotlib
 ```
 
-The repo has no requirements file. Tested with numpy 2.5.5, scipy 1.18.1, matplotlib 3.11.2, and torch 2.15.0 (CPU wheel, first lab) or 2.14.1+cu130 (GPU, second lab). On Windows, keep your virtual environment in a short folder: torch's file names can pass the 260-character path limit, and `pip` then stops with an `OSError`.
+The repo has no requirements file. Tested with Python 3.12.15, numpy 2.5.5, scipy 1.18.1, matplotlib 3.11.2, and torch 2.15.0 (CPU wheel from PyPI, first lab; the `pip` line took 41 s) or 2.14.1+cu130 (GPU, second lab). On Windows, keep your virtual environment in a short folder: torch's file names can pass the 260-character path limit, and `pip` then stops with an `OSError`.
 
 ```powershell
 python dataset.py                    # 1 · 1,000 random arrays and their specs
@@ -284,9 +284,10 @@ On our laptop's CPU, scripts 1 to 4 take 1.8 s, 0.5 s, 11 s and 33 s; the docs g
 1. **Re-run the VQ-VAE test on the committed models.** `python test_model_VQVAE.py` (about 35 s). The "RÉSUMÉ DU TEST" table gives the mean global error: 0.614 for the VQ-VAE on a CPU (0.713 on our GPU), 3.372 for the FFNN.
 2. **Open `diagramme_exemple_77.png`.** Look at the side lobes: orange follows blue, green sits 5 dB lower.
 3. **Change the draw.** Set `SEED = 1` at the top of `test_model_VQVAE.py` and run it again: 0.665%. That is the spread of §06.
-4. **Re-run the DQN evaluation.** `git restore .` first (R2 reads the arrays script 4 wrote last), then `python rl_dqn/test_model_DQN.py` (about 50 s on our GPU). In its "RÉSUMÉ DU TEST" table, compare the "DQN" and "Recherche aléatoire" rows: valid answers ("Valides %") and gap to the optimum ("Écart moy.").
-5. **Open `rl_dqn/trajectoire_DQN.png`,** then the four `rl_dqn/diagrammes_DQN_XX.png`: where the agent fails, and where it lands next to the optimum.
-6. **Put everything back.** `git restore .`
+4. **Retrain.** `python VQVAE_training.py`, then script 4 again. Open `courbes_VQVAE.png` and `distribution_erreurs.png`.
+5. **Re-run the DQN evaluation.** `git restore .` first (R2 reads the arrays script 4 wrote last), then `python rl_dqn/test_model_DQN.py` (about 50 s on our GPU). In its "RÉSUMÉ DU TEST" table, compare the "DQN" and "Recherche aléatoire" rows: valid answers ("Valides %") and gap to the optimum ("Écart moy.").
+6. **Open `rl_dqn/trajectoire_DQN.png`,** then the four `rl_dqn/diagrammes_DQN_XX.png`: where the agent fails, and where it lands next to the optimum.
+7. **Put everything back.** `git restore .`
 
 <details>
 <summary><b>Check both chains in seconds</b></summary>
@@ -316,12 +317,13 @@ About 11 s for the first four and 23 s for the last three on our laptop (fresh c
 | 0.61% | The committed run: CPU, seed 46. It is the best of the 6 seeds we ran (0.61 to 0.72%). |
 | 0.72% for random search | From `docs/05_resultats.md`, measured outside the four scripts. Its script is not in the repo. |
 | The FFNN | The teacher's trained model (`ffnn_model.pth`), run by script 4 on the same 100 specs. |
+| "Same data as the FFNN" | Shown for the split: the teacher's normalization file matches our training set exactly. The teacher's own scripts and data files are not in this repo. |
 | 86% and 6.9 dB | Mean of 3 DQN seeds; the spread is wide (82 to 92%, 6.0 to 8.7 dB). |
 | The −5 dB penalty | Chosen after three pilots scored on the 100 test specs (1 seed, 100,000 steps). Those pilot runs are not in the scripts. |
 | "No dataset" | The DQN reads no file: requests and arrays are drawn on the fly. The 100 test specs are read only by R2. Training requests draw the two limits independently; the test specs take both from one real array. |
 | The optimum | An exhaustive search, possible here (0.38 s per spec on our GPU). |
 | VQ-VAE and FFNN in the DQN lab's comparison | Arrays read from the first lab's files, not re-run. They aim at the *requested* SSL, not the lowest, so [`rl_dqn/README.md`](rl_dqn/README.md) lists them only to place the SSL levels. |
-| Times per spec | 1.04 s and 0.0035 s come from the first lab's committed run; that machine is not recorded. The second lab's times come from our laptop: Intel Core i7-13650HX, RTX 5050 Laptop GPU. |
+| Times per spec | 1.04 s and 0.0035 s come from the first lab's committed run; that machine is not recorded. On our laptop (Intel Core i7-13650HX, RTX 5050 Laptop GPU) the VQ-VAE takes 0.21 to 0.30 s per spec, and the second lab's times come from it. |
 | Equation numbers (15), (24), (25) | From the group's theoretical summary report, which is not in this repo. |
 | The plots | Written by the scripts and committed. The hero crops two of them; the before / after pair is re-drawn from committed arrays with the teacher's function (`assets/readme/make_readme_images.py`). |
 

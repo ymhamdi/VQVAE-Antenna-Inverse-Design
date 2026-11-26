@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" width="960" height="420" role="img" aria-labelledby="t d" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <title id="t">One DQN episode</title>
+  <desc id="d">A request (theta0, G_min, HPBW_max) is drawn on the fly. The state has 14 values: the array, sin theta0, the two limits, the current G, SSL and HPBW, how far each limit is missed, and the steps left. A Q-network (14, 256, 256, 11) picks one of 11 moves: plus or minus one antenna on a ring, or stop. The teacher's array-factor rules give G, SSL and HPBW of the new array. The score J is minus the SSL, minus penalties for a missed limit, minus 5 dB if the array is not valid. The reward is the change in J divided by 10, minus 0.005 per step; it leads to the next state. After a stop or 30 steps, the answer is the best valid array seen.</desc>
+  <rect x="0" y="0" width="960" height="420" rx="14" fill="#fcfcfb"/>
+  <rect x="0.5" y="0.5" width="959" height="419" rx="14" fill="none" stroke="#d9d6cf"/>
+  <text x="22" y="40" font-size="20" font-weight="700" fill="#0b0b0b">One episode: edit the array, one antenna at a time</text>
+  <rect x="610" y="56" width="16" height="16" rx="3" fill="#fde9e0" stroke="#d9d6cf"/><text x="634" y="69" font-size="14" fill="#52514e">learned (DQN)</text>
+  <rect x="760" y="56" width="16" height="16" rx="3" fill="#efeeea" stroke="#d9d6cf"/><text x="784" y="69" font-size="14" fill="#52514e">physics (teacher's code)</text>
+  <!-- row 1 -->
+  <rect x="22" y="90" width="204" height="104" rx="10" fill="#fcfcfb" stroke="#d9d6cf" stroke-width="1.2"/>
+  <text x="124.0" y="120" font-size="16.5" font-weight="700" fill="#0b0b0b" text-anchor="middle">Request</text>
+  <text x="124.0" y="144" font-size="14.5" fill="#52514e" text-anchor="middle">θ0, G_min, HPBW_max</text>
+  <text x="124.0" y="164" font-size="14.5" fill="#52514e" text-anchor="middle">drawn on the fly</text>
+  <line x1="226" y1="142.0" x2="255" y2="142.0" stroke="#52514e" stroke-width="1.8"/>
+  <path d="M262 142.0 l-9 -5 v10 z" fill="#52514e"/>
+  <rect x="262" y="90" width="204" height="104" rx="10" fill="#fcfcfb" stroke="#d9d6cf" stroke-width="1.2"/>
+  <text x="364.0" y="120" font-size="16.5" font-weight="700" fill="#0b0b0b" text-anchor="middle">State: 14 values</text>
+  <text x="364.0" y="144" font-size="14.5" fill="#52514e" text-anchor="middle">array, sin θ0, limits,</text>
+  <text x="364.0" y="164" font-size="14.5" fill="#52514e" text-anchor="middle">G, SSL, HPBW, steps left</text>
+  <line x1="466" y1="142.0" x2="495" y2="142.0" stroke="#52514e" stroke-width="1.8"/>
+  <path d="M502 142.0 l-9 -5 v10 z" fill="#52514e"/>
+  <rect x="502" y="90" width="204" height="104" rx="10" fill="#fde9e0" stroke="#d9d6cf" stroke-width="1.2"/>
+  <text x="604.0" y="120" font-size="16.5" font-weight="700" fill="#0b0b0b" text-anchor="middle">Q-network</text>
+  <text x="604.0" y="144" font-size="14.5" fill="#52514e" text-anchor="middle">14 → 256 → 256 → 11</text>
+  <text x="604.0" y="164" font-size="14.5" fill="#52514e" text-anchor="middle">picks the best move</text>
+  <line x1="706" y1="142.0" x2="735" y2="142.0" stroke="#52514e" stroke-width="1.8"/>
+  <path d="M742 142.0 l-9 -5 v10 z" fill="#52514e"/>
+  <rect x="742" y="90" width="204" height="104" rx="10" fill="#fde9e0" stroke="#d9d6cf" stroke-width="1.2"/>
+  <text x="844.0" y="120" font-size="16.5" font-weight="700" fill="#0b0b0b" text-anchor="middle">Move: 1 of 11</text>
+  <text x="844.0" y="144" font-size="14.5" fill="#52514e" text-anchor="middle">+1 or −1 antenna</text>
+  <text x="844.0" y="164" font-size="14.5" fill="#52514e" text-anchor="middle">on a ring, or stop</text>
+  <!-- down -->
+  <line x1="844.0" y1="194" x2="844.0" y2="249" stroke="#52514e" stroke-width="1.8"/>
+  <path d="M844.0 256 l-5 -9 h10 z" fill="#52514e"/>
+  <!-- row 2 -->
+  <rect x="742" y="256" width="204" height="104" rx="10" fill="#efeeea" stroke="#d9d6cf" stroke-width="1.2"/>
+  <text x="844.0" y="286" font-size="16.5" font-weight="700" fill="#0b0b0b" text-anchor="middle">Array factor</text>
+  <text x="844.0" y="310" font-size="14.5" fill="#52514e" text-anchor="middle">G, SSL, HPBW</text>
+  <text x="844.0" y="330" font-size="14.5" fill="#52514e" text-anchor="middle">of the new array</text>
+  <line x1="742" y1="308.0" x2="713" y2="308.0" stroke="#52514e" stroke-width="1.8"/>
+  <path d="M706 308.0 l9 -5 v10 z" fill="#52514e"/>
+  <rect x="502" y="256" width="204" height="104" rx="10" fill="#fcfcfb" stroke="#d9d6cf" stroke-width="1.2"/>
+  <text x="604.0" y="286" font-size="16.5" font-weight="700" fill="#0b0b0b" text-anchor="middle">Score J</text>
+  <text x="604.0" y="310" font-size="14.5" fill="#52514e" text-anchor="middle">−SSL − missed limits</text>
+  <text x="604.0" y="330" font-size="14.5" fill="#52514e" text-anchor="middle">− 5 dB if not valid</text>
+  <line x1="502" y1="308.0" x2="473" y2="308.0" stroke="#52514e" stroke-width="1.8"/>
+  <path d="M466 308.0 l9 -5 v10 z" fill="#52514e"/>
+  <rect x="262" y="256" width="204" height="104" rx="10" fill="#fcfcfb" stroke="#d9d6cf" stroke-width="1.2"/>
+  <text x="364.0" y="286" font-size="16.5" font-weight="700" fill="#0b0b0b" text-anchor="middle">Reward</text>
+  <text x="364.0" y="310" font-size="14.5" fill="#52514e" text-anchor="middle">ΔJ / 10 − 0.005</text>
+  <text x="364.0" y="330" font-size="14.5" fill="#52514e" text-anchor="middle">then the next state</text>
+  <!-- up to state -->
+  <line x1="364.0" y1="256" x2="364.0" y2="201" stroke="#52514e" stroke-width="1.8"/>
+  <path d="M364.0 194 l-5 9 h10 z" fill="#52514e"/>
+  <!-- to answer -->
+  <line x1="262" y1="308.0" x2="233" y2="308.0" stroke="#52514e" stroke-width="1.8" stroke-dasharray="5 4"/>
+  <path d="M226 308.0 l9 -5 v10 z" fill="#52514e"/>
+  <rect x="22" y="256" width="204" height="104" rx="10" fill="#e3eefb" stroke="#d9d6cf" stroke-width="1.2"/>
+  <text x="124.0" y="286" font-size="16.5" font-weight="700" fill="#0b0b0b" text-anchor="middle">Answer</text>
+  <text x="124.0" y="310" font-size="14.5" fill="#52514e" text-anchor="middle">best valid array seen</text>
+  <text x="124.0" y="330" font-size="14.5" fill="#52514e" text-anchor="middle">after stop or 30 steps</text>
+  <text x="22" y="398" font-size="13.5" fill="#8a877f">Committed run: 3 seeds × 300,000 steps, 51,323 episodes. On the 100 test specs: 20.5 array-factor evaluations per spec on average.</text>
+</svg>

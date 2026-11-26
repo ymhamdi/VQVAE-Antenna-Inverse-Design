@@ -22,7 +22,7 @@ To read a `.mat` key: `python -c "import scipy.io as s; print(s.loadmat('rl_dqn/
 | P5 | Possible arrays | 11⁵ − 1 = 161,050 | from P4; `rl_dqn/physique_antenne.py` `NB_ARCHITECTURES` | code |
 | P6 | Specs | G, SSL, HPBW, θ0; θ0 uniform in [0°, 180°] | `dataset.py` lines 166-176 | code |
 | P7 | Cut | φ = 0, 1,000 angles θ ∈ [0, 2π] | `dataset.py`: `theta`, `phi` | code |
-| P8 | Ranges in the dataset | G 12.04 → 33.44 dB; SSL −38.69 → −1.35 dB; HPBW 11.17 → 113.51°; θ0 0.06 → 179.68° | `Minput.npy`, min / max per row | file |
+| P8 | Ranges in the dataset | G 12.04 → 33.44 dB; SSL −38.69 → −1.35 dB; HPBW 11.17 → 113.51°; θ0 0.06 → 179.68° (README: 12.0 to 33.4 dB, −38.7 to −1.3 dB, 11.2 to 113.5°, 0.1 to 179.7°) | `Minput.npy`, min / max per row | file |
 | P9 | G depends only on the total | \|G − 20·log10(Σ n_r)\| ≤ 0.0007 dB on the 1,000 samples | `Minput.npy` row 0 vs `Moutput.npy` | file |
 | P10 | θ0 acts only through sin θ0 | phase = k·a_r·cos φ_n·(sin θ − sin θ0) since φ = φ0 = 0; θ0 and 180° − θ0 give the same G, SSL, HPBW (max gap 1.8e-14 dB on 500 arrays) | `calcul_AF_performance_metrics`; `rl_dqn/verification_physique.mat` `ecart_max_symetrie_*` | code, file |
 | P11 | Time per array, teacher's function | 0.73 to 0.82 ms (`python dataset.py`, 23 Nov); 0.86 ms (`python rl_dqn/physique_antenne.py`, 26 Nov) | console; `verification_physique.mat` `temps_enseignant_ms` | run 23 Nov, file |
@@ -45,12 +45,12 @@ To read a `.mat` key: `python -c "import scipy.io as s; print(s.loadmat('rl_dqn/
 | E1 | Reconstruction (training, epoch 100) | 76.4% per ring, 28.3% per array | `historique_VQVAE.npy` last row, columns 7-8 | file |
 | E2 | Codebook use | 16 codes from epoch 2 (15 at epoch 1); perplexity 15.76 | `historique_VQVAE.npy` columns 4-5 | file |
 | E3 | Prior (training) | 17.7% of rings get the right code; chance 6.25% | `historique_prior.npy` last row, column 1 | file |
-| E4 | Curves | reconstruction loss 12.00 → 3.37; codebook = engagement every epoch | `historique_VQVAE.npy` columns 1-3 | file |
+| E4 | Curves | reconstruction loss 12.00 → 3.37 (README alt: about 3.4); codebook = engagement every epoch, 6.49 at epoch 100 (README alt: about 6.5) | `historique_VQVAE.npy` columns 1-3 | file |
 | E5 | Committed durations | stage A 13.2 s, stage B 12.0 s | `historique_*.mat` `duree_s` | file |
-| T1 | Mean global error | VQ-VAE 0.6136%, FFNN 3.3715% | `comparaison_VQVAE_FFNN.npy` row 0 | file |
-| T2 | Median · 90th percentile · worst | VQ-VAE 0.544 · 1.100 · 2.126%; FFNN 2.990 · 6.671 · 8.232% | `erreurs_*.npy` column 6 | file |
-| T3 | Mean absolute errors | G 0.133 / 0.326 dB; SSL 0.2349 / 2.978 dB; HPBW 1.492 / 2.699° | `comparaison_VQVAE_FFNN.npy` rows 5-7 | file |
-| T4 | Mean relative SSL error | 0.607% / 7.696% | row 3 | file |
+| T1 | Mean global error | VQ-VAE 0.6136%, FFNN 3.3715% (README: 0.61%, 3.37%; console: 0.614, 3.372) | `comparaison_VQVAE_FFNN.npy` row 0 | file |
+| T2 | Median · 90th percentile · worst | VQ-VAE 0.544 · 1.100 · 2.126%; FFNN 2.990 · 6.671 · 8.232% (README: 0.54 · 1.10 · 2.13 and 2.99 · 6.67 · 8.23) | `erreurs_*.npy` column 6 | file |
+| T3 | Mean absolute errors | G 0.133 / 0.326 dB; SSL 0.2349 / 2.978 dB; HPBW 1.492 / 2.699° (README: 0.13 / 0.33, 0.23 / 2.98, 1.49 / 2.70) | `comparaison_VQVAE_FFNN.npy` rows 5-7 | file |
+| T4 | Mean relative SSL error | 0.607% / 7.696% (README: 0.61% / 7.70%) | row 3 | file |
 | T5 | Wins | VQ-VAE lower on 96 / 100 specs | `erreurs_VQVAE.npy[:, 6] < erreurs_FFNN.npy[:, 6]` | file |
 | T6 | Exact reference found | 0 / 100 for both | row 8 | file |
 | T7 | Time per spec | VQ-VAE 1.0449 s, FFNN 0.0035 s (machine not recorded) | row 9 | file |
@@ -61,8 +61,9 @@ To read a `.mat` key: `python -c "import scipy.io as s; print(s.loadmat('rl_dqn/
 | S1 | Script 4 on CPU, committed models | identical to the committed run (0.614%) | `$env:CUDA_VISIBLE_DEVICES = "-1"; python test_model_VQVAE.py` | run 23 Nov |
 | S2 | Script 4 on GPU, committed models | 0.713% | `python test_model_VQVAE.py` with CUDA | run 23 Nov |
 | S3 | Seed spread, committed models, CPU | seeds 1-5: 0.665 / 0.720 / 0.678 / 0.658 / 0.713% | `SEED` at the top of `test_model_VQVAE.py` | run 23 Nov |
-| S4 | Full retrain | CPU 0.654%, GPU 0.799% | the four scripts | run 23 Nov |
+| S4 | Full retrain | CPU 0.654%, GPU 0.799% (README: 0.65, 0.80) | the four scripts | run 23 Nov |
 | S5 | Durations (CPU, fresh venv) | `pip install` 41 s; scripts 1.8 s, 0.5 s, 11.1 s, 32.9 s; script 4 alone 34.6 s; time per spec 0.21 s (GPU) to 0.30 s (CPU) | PowerShell timing | run 23 Nov |
+| S7 | Long paths | `pip install torch` fails with `OSError` when the venv sits in a deep folder (Windows 260-character path limit); works in a short folder | first fresh-clone attempt, PR #1 | run 23 Nov |
 | S6 | Quick chain | `--rapide`: 50 samples, 2 + 2 epochs, ≈ 8 s | the four scripts with `--rapide` | run 23 Nov |
 | X1 | Random search, same check | 0.72% (protocol not in the repo; our own re-run gave 0.76 to 0.86%) | `docs/05_resultats.md` Limits §1; PR #1 | docs only |
 | X2 | Durations of the committed run | 2-5 s, < 1 s, about 25 s, about 2 min | `docs/01`-`04` | docs only |
@@ -74,24 +75,24 @@ To read a `.mat` key: `python -c "import scipy.io as s; print(s.loadmat('rl_dqn/
 |---|---|---|---|---|
 | Q1 | Problem | min SSL subject to G ≥ G_min − 0.05 dB and HPBW ≤ HPBW_max + 0.5° | `rl_dqn/physique_antenne.py` `TOL_G_DB`, `TOL_HPBW_DEG`, `est_valide` | code |
 | Q2 | G tolerance is exact | consecutive totals differ by ≥ 20·log10(50/49) = 0.175 dB | from P9 | code |
-| Q3 | Unconstrained optimum is small and wide | θ0 = 30°: [7 6 0 0 0], 13 elements, SSL −58.89 dB, HPBW 54.05°; θ0 = 90°: [8 0 0 0 0], 8 elements, −25.24 dB, 168.29° (also 5°, 60°, 85°) | `rl_dqn/verification_physique.mat` `optimum_sans_contrainte` | file |
+| Q3 | Unconstrained optimum is small and wide | θ0 = 30°: [7 6 0 0 0], 13 elements, SSL −58.89 dB, HPBW 54.05° (README: −58.9 dB, 54°); θ0 = 90°: [8 0 0 0 0], 8 elements, −25.24 dB, 168.29° (also 5°, 60°, 85°) | `rl_dqn/verification_physique.mat` `optimum_sans_contrainte` | file |
 | Q4 | Fast physics = teacher's function | 2,000 random (array, θ0) pairs: max gap 1.07e-14 dB (G), 4.97e-14 dB (SSL), 0 (HPBW); 0 pairs above 1e-9; batch version 5.68e-14 dB, 8 exact fallbacks; copy identical to `dataset.py` | `rl_dqn/verification_physique.npy` / `.mat` | file |
 | Q5 | Speeds | fast version 0.19 ms per array (+ 5.3 ms per θ0 for the ring patterns); exhaustive search 0.40 s per θ0 on GPU (≈ 138 s estimated with the teacher's function) | `verification_physique.mat` `temps_*` | file |
 | Q6 | Environment | 11 actions (+1 / −1 per ring, stop); 30 steps; 14-value state with sin θ0 only; requests drawn on the fly (θ0 uniform, G_min and HPBW_max uniform in the ranges of 64 random arrays at that θ0); no data file read | `rl_dqn/env_antenne.py` constants, `tirer_requete` | code |
 | Q7 | Score and reward | J = −SSL − 10·(G shortfall, dB) − 1·(HPBW excess, °) − 5 dB if invalid; r = ΔJ/10 − 0.005; illegal move −0.1. One missing antenna costs ≥ 10·20·log10(50/49) = 1.75 dB of score (N ≤ 50) | `env_antenne.py` `ALPHA`, `BETA`, `PENALITE_INVALIDE`, `ECHELLE_J`, `COUT_PAS`, `PENALITE_ILLEGAL` | code |
 | Q8 | Network | MLP 14 → 256 → 256 → 11, 72,459 parameters; Double DQN, Huber, replay 100,000, batch 512 every 4 steps, target copy every 500 updates, ε 1 → 0.05 | `rl_dqn/DQN_training.py`; `dqn_model.pt` | code, file |
 | Q9 | Training run | 3 seeds (46, 47, 48) × 300,000 steps on GPU; 51,323 episodes; 388 / 410 / 436 s (1,238 s in all); last 500 episodes valid in 84.4 / 83.6 / 84.6% | `rl_dqn/historique_DQN.mat` `duree_s`; console of `DQN_training.py` | file, run 26 Nov |
-| Q10 | Seed 47 degrades | return 1.88 → 1.21 and loss 0.0036 → 0.0114 (200-250k vs > 275k steps) | `rl_dqn/historique_DQN.npy` columns 3, 11 | file |
-| Q11 | Test results (mean ± std, 3 seeds) | DQN: valid 86.0 ± 4.3%, mean gap to optimum 6.90 ± 1.28 dB (valid answers), mean SSL −15.22 ± 1.42 dB, 20.5 evaluations, 0.012 s per spec. Random search, same budget: 83.0 ± 2.9%, 10.24 ± 0.20 dB, −12.15 dB. Local search, same budget: 54.7 ± 2.5%, 10.99 ± 0.48 dB, −12.40 dB. Optimum: −21.66 dB mean (−18.76 median), 161,050 evaluations, 0.376 s per spec | `rl_dqn/comparaison_methodes.mat` `tableau`, `ecart_type_graines` | file |
+| Q10 | Seed 47 degrades | return 1.88 → 1.21 and loss 0.0036 → 0.0114 (200-250k vs > 275k steps; README: degrades after 275,000 steps) | `rl_dqn/historique_DQN.npy` columns 3, 11 | file |
+| Q11 | Test results (mean ± std, 3 seeds) | DQN: valid 86.0 ± 4.3%, mean gap to optimum 6.90 ± 1.28 dB (valid answers), mean SSL −15.22 ± 1.42 dB, 20.5 evaluations, 0.012 s per spec. Random search, same budget: 83.0 ± 2.9%, 10.24 ± 0.20 dB, −12.15 dB. Local search, same budget: 54.7 ± 2.5%, 10.99 ± 0.48 dB, −12.40 dB. Optimum: −21.66 dB mean (−18.76 median), 161,050 evaluations, 0.376 s per spec (README: 0.38 s; heading: 0.4 s) | `rl_dqn/comparaison_methodes.mat` `tableau`, `ecart_type_graines` | file |
 | Q12 | Same table, first-lab rows | reference −8.30 dB (100% valid, gap 13.37 dB); VQ-VAE −8.32 dB (65% valid); FFNN −8.71 dB (31% valid) | same | file |
 | Q13 | Per seed | DQN valid 82 / 84 / 92%, gap 5.97 / 8.72 / 6.02 dB; random search valid 84 / 86 / 79%, gap 10.27 / 9.98 / 10.46 dB; DQN lower SSL than random on 64 / 73, 46 / 73, 70 / 77 specs where both are valid | `rl_dqn/resultats_DQN.mat` `resultats` | file |
-| Q14 | "Number" of antennas | the optimum uses more elements than G_min requires on 96% of specs (+10.43 on average); 13.37 dB lower than the reference on average; median 32,590 valid arrays per spec | `resultats_DQN.mat` `resultats`, `N_ref`, `nb_valides_exhaustive` | file |
+| Q14 | "Number" of antennas | the optimum uses more elements than G_min requires on 96% of specs (+10.43 on average); 13.37 dB lower than the reference on average (README: 13.4 dB); median 32,590 valid arrays per spec | `resultats_DQN.mat` `resultats`, `N_ref`, `nb_valides_exhaustive` | file |
 | Q15 | Spec 0 with the DQN | DQN seed 46 [6 2 10 10 3]: SSL −16.11 dB, G 29.83 dB, HPBW 72.43°, valid; VQ-VAE [9 1 9 5 7]: −9.36 dB, HPBW 72.07°; optimum [5 6 8 10 3] −18.54 dB. Re-drawn by `assets/readme/make_readme_images.py` with the teacher's function (same values) | `resultats_DQN.mat`, row 0; console of the generator | file, run 26 Nov |
 | Q16 | Spec 10 with the DQN | seed 46 fails: no valid array in 25 evaluations, ends at HPBW 18.02° (limit 17.8°), 6 repeated illegal moves | `resultats_DQN.mat` `trajectoire_DQN` | file |
 | Q17 | The 5 dB penalty saw the test set | pilots on the 100 test specs (1 seed, 100k steps): P = 0 → 59% valid, 7.2 dB; P = 20 dB → 94%, 10.3 dB; P = 5 dB → 85%, 8.1 dB | throwaway runs, logs not in the repo | outside scripts |
 | Q18 | Update cost | ≈ 1.4 ms per update, same for batches of 128 and 512 on the GPU | throwaway benchmark | outside scripts |
 | Q19 | Durations | `physique_antenne.py` 30 s; R2 50 s; `--rapide` chain (3 scripts) 22.3 s | timed in Git Bash | run 26 Nov |
-| Q20 | Training curves (mean of 3 seeds, moving average over 500 episodes, first vs last window) | return −0.14 → 1.56 (about 2 near 200,000 steps); best valid SSL −10.54 → −15.85 dB; valid episodes 50.0 → 84.2%; evaluations per episode 8.25 → 19.92 | `rl_dqn/historique_DQN.npy` columns 3, 5, 6, 7; `courbes_DQN.png` | file |
+| Q20 | Training curves (mean of 3 seeds, moving average over 500 episodes, first vs last window) | return −0.14 → 1.56 (about 2 near 200,000 steps); best valid SSL −10.54 → −15.85 dB (README alt: −10.5 → −15.9); valid episodes 50.0 → 84.2%; evaluations per episode 8.25 → 19.92 | `rl_dqn/historique_DQN.npy` columns 3, 5, 6, 7; `courbes_DQN.png` | file |
 
 ## History and credits
 

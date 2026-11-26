@@ -92,6 +92,7 @@ To read a `.mat` key: `python -c "import scipy.io as s; print(s.loadmat('rl_dqn/
 | Q17 | The 5 dB penalty saw the test set | pilots on the 100 test specs (1 seed, 100k steps): P = 0 → 59% valid, 7.2 dB; P = 20 dB → 94%, 10.3 dB; P = 5 dB → 85%, 8.1 dB | throwaway runs, logs not in the repo | outside scripts |
 | Q18 | Update cost | ≈ 1.4 ms per update, same for batches of 128 and 512 on the GPU | throwaway benchmark | outside scripts |
 | Q19 | Durations | `physique_antenne.py` 30 s; R2 50 s; `--rapide` chain (3 scripts) 22.3 s | timed in Git Bash | run 26 Nov |
+| F1 | Fresh clone, 26 Nov (PowerShell, `C:\venvs\vqvae-rl` first on PATH) | `git clone` 5.2 s; `test_model_VQVAE.py` CPU (`$env:CUDA_VISIBLE_DEVICES = "-1"`) 0.614%, 32.9 s; GPU 0.713%, 26.3 s; `rl_dqn/test_model_DQN.py` 51.9 s, DQN / random / local / optimum rows identical to the committed table; `--rapide` chains 10.9 s (scripts 1-4) and 23.1 s (R0-R2); `git restore .` leaves 0 changed files. R2 run after script 4 shows a different "VQ-VAE" row (48% valid): it reads the arrays script 4 wrote last | console and `Measure-Command` in a fresh clone of `main` | run 26 Nov |
 | Q20 | Training curves (mean of 3 seeds, moving average over 500 episodes, first vs last window) | return −0.14 → 1.56 (about 2 near 200,000 steps); best valid SSL −10.54 → −15.85 dB (README alt: −10.5 → −15.9); valid episodes 50.0 → 84.2%; evaluations per episode 8.25 → 19.92 | `rl_dqn/historique_DQN.npy` columns 3, 5, 6, 7; `courbes_DQN.png` | file |
 
 ## History and credits

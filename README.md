@@ -207,12 +207,12 @@ The question changes. A request gives θ0, a minimum gain G_min and a maximum be
 
 On the 100 test specs, each read only by the evaluation script. Mean ± spread of 3 seeds; the gap to the optimum counts valid answers only.
 
-| Method | Valid answers | Gap to the optimum | Mean SSL | Array-factor evaluations |
+| Method | Valid answers | Gap to the optimum | Mean SSL (dB) | Array-factor evaluations |
 |---|---|---|---|---|
-| **DQN** | **86.0 ± 4.3%** | **6.90 ± 1.28 dB** | −15.22 dB | 20.5 |
-| Random search, same budget | 83.0 ± 2.9% | 10.24 ± 0.20 dB | −12.15 dB | 20.5 |
-| Local search (same ±1 moves), same budget | 54.7 ± 2.5% | 10.99 ± 0.48 dB | −12.40 dB | 20.5 |
-| Optimum (exhaustive search) | 100% | 0 | −21.66 dB | 161,050 |
+| **DQN** | **86.0 ± 4.3%** | **6.90 ± 1.28 dB** | −15.22 | 20.5 |
+| Random search, same budget | 83.0 ± 2.9% | 10.24 ± 0.20 dB | −12.15 | 20.5 |
+| Local search (same ±1 moves), same budget | 54.7 ± 2.5% | 10.99 ± 0.48 dB | −12.40 | 20.5 |
+| Optimum (exhaustive search) | 100% | 0 | −21.66 | 161,050 |
 
 - **The learned policy is what helps.** At the same budget the DQN lands about 3 dB closer to the optimum than random search. Random moves of the same kind do worse than random arrays.
 - **The seeds disagree.** Per seed: 82, 84 and 92% valid; 6.0, 8.7 and 6.0 dB from the optimum. Seed 47 beats random search on only 46 of the 73 specs where both are valid.
@@ -254,7 +254,7 @@ What the optimum shows:
 
 ## Quick start
 
-Windows 11, PowerShell, Python 3.12. The first lab's lines ran on 23 Nov 2026 on a fresh clone; the second lab's on 26 Nov 2026.
+Windows 11, PowerShell, Python 3.12. Every line below ran on our laptop: the first lab's on a fresh clone on 23 Nov 2026; the second lab's on 26 Nov 2026, when script 4, R2 and both `--rapide` chains ran again on a fresh clone.
 
 ```powershell
 git clone https://github.com/ymhamdi/VQVAE-Antenna-Inverse-Design.git
@@ -284,7 +284,7 @@ On our laptop's CPU, scripts 1 to 4 take 1.8 s, 0.5 s, 11 s and 33 s; the docs g
 1. **Re-run the VQ-VAE test on the committed models.** `python test_model_VQVAE.py` (about 35 s). The "RÉSUMÉ DU TEST" table gives the mean global error: 0.614 for the VQ-VAE on a CPU (0.713 on our GPU), 3.372 for the FFNN.
 2. **Open `diagramme_exemple_77.png`.** Look at the side lobes: orange follows blue, green sits 5 dB lower.
 3. **Change the draw.** Set `SEED = 1` at the top of `test_model_VQVAE.py` and run it again: 0.665%. That is the spread of §06.
-4. **Re-run the DQN evaluation.** `python rl_dqn/test_model_DQN.py` (about 50 s on our GPU). In its "RÉSUMÉ DU TEST" table, compare the "DQN" and "Recherche aléatoire" rows: valid answers ("Valides %") and gap to the optimum ("Écart moy.").
+4. **Re-run the DQN evaluation.** `git restore .` first (R2 reads the arrays script 4 wrote last), then `python rl_dqn/test_model_DQN.py` (about 50 s on our GPU). In its "RÉSUMÉ DU TEST" table, compare the "DQN" and "Recherche aléatoire" rows: valid answers ("Valides %") and gap to the optimum ("Écart moy.").
 5. **Open `rl_dqn/trajectoire_DQN.png`,** then the four `rl_dqn/diagrammes_DQN_XX.png`: where the agent fails, and where it lands next to the optimum.
 6. **Put everything back.** `git restore .`
 
@@ -302,7 +302,7 @@ python rl_dqn/test_model_DQN.py --rapide     # 5 specs
 git restore .
 ```
 
-About 8 s for the first four and 22 s for the last three on our laptop. Script 4 then tests 5 specs and warns that the split differs from the FFNN's. The numbers mean nothing: it only shows that the scripts run end to end.
+About 11 s for the first four and 23 s for the last three on our laptop (fresh clone, 26 Nov). Script 4 then tests 5 specs and warns that the split differs from the FFNN's. The numbers mean nothing: it only shows that the scripts run end to end.
 
 </details>
 
